@@ -1,0 +1,3 @@
+class AuthClient {
+  AuthClient();
+}
