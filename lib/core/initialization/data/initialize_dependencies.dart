@@ -11,6 +11,8 @@ import 'package:tonometr/core/initialization/data/models/app_metadata.dart';
 import 'package:tonometr/core/initialization/data/models/dependencies.dart';
 import 'package:tonometr/core/initialization/data/services/device_info_service.dart';
 import 'package:tonometr/core/initialization/data/services/package_info_service.dart';
+import 'package:tonometr/themes/dark_theme.dart';
+import 'package:tonometr/themes/light_theme.dart';
 
 /// Initializes the app and returns a [Dependencies] object
 Future<Dependencies> $initializeDependencies({
@@ -71,5 +73,8 @@ final Map<String, _InitializationStep> _initializationSteps =
           ..storage = PersistentStorage(sharedPreferences: sharedPreferences)
           ..authClient = AuthClient()
           ..authRepository = AuthRepository();
+
+        final themeName = await dependencies.storage.read(key: 'app_theme');
+        dependencies.theme = themeName == 'dark' ? darkTheme : lightTheme;
       },
     };

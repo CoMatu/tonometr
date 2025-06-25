@@ -7,6 +7,19 @@ class BloodPressurePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Placeholder(color: Colors.blue);
+    return Scaffold(
+      appBar: AppBar(title: const Text('Давление')),
+      body: Column(
+        children: [
+          SizedBox(
+            width: 200,
+            height: 100,
+            child: TextFormField(
+              decoration: const InputDecoration(labelText: 'Давление'),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

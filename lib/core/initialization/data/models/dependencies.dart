@@ -17,6 +17,9 @@ abstract interface class Dependencies {
   /// App metadata
   abstract final AppMetadata appMetadata;
 
+  /// Theme
+  abstract final ThemeData theme;
+
   /// Storage
   abstract final PersistentStorage storage;
 
@@ -44,6 +47,9 @@ final class $MutableDependencies implements Dependencies {
   late AppMetadata appMetadata;
 
   @override
+  late ThemeData theme;
+
+  @override
   late PersistentStorage storage;
 
   @override
@@ -62,6 +68,7 @@ final class $MutableDependencies implements Dependencies {
     authRepository: authRepository,
     authClient: authClient,
     talker: talker,
+    theme: theme,
   );
 }
 
@@ -72,10 +79,14 @@ final class _$ImmutableDependencies implements Dependencies {
     required this.authRepository,
     required this.authClient,
     required this.talker,
+    required this.theme,
   });
 
   @override
   final AppMetadata appMetadata;
+
+  @override
+  final ThemeData theme;
 
   @override
   final PersistentStorage storage;
