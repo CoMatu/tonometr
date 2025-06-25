@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tonometr/blood_pressure/ui/blood_pressure_page.dart';
 import 'package:tonometr/charts/ui/chart_page.dart';
+import 'package:tonometr/home/domain/bottom_bar_bloc.dart/bottom_bar_bloc.dart';
 import 'package:tonometr/settings/ui/settings_page.dart';
 import 'package:tonometr/themes/theme_provider.dart';
 
@@ -14,8 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
-
   final List<Widget> _pages = [
     const BloodPressurePage(),
     const ChartPage(),
@@ -23,44 +23,46 @@ class _HomePageState extends State<HomePage> {
   ];
 
   void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    context.read<BottomBarBloc>().add(BottomBarEvent.update(index));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Тонометр'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.brightness_6),
-            onPressed: () {
-              ThemeProvider.of(context).toggleTheme();
-            },
+    return BlocBuilder<BottomBarBloc, BottomBarState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Тонометр'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.brightness_6),
+                onPressed: () {
+                  ThemeProvider.of(context).toggleTheme();
+                },
+              ),
+            ],
           ),
-        ],
-      ),
-      body: IndexedStack(index: _currentIndex, children: _pages),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.water_drop_outlined),
-            label: 'Давление',
+          body: IndexedStack(index: state.index, children: _pages),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: state.index,
+            onTap: _onTabTapped,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.water_drop_outlined),
+                label: 'Давление',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.bar_chart),
+                label: 'Графики',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Настройки',
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: 'Графики',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Настройки',
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
