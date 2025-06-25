@@ -36,6 +36,7 @@ dependencies:
   talker_flutter: ^4.9.1
 
 dev_dependencies:
+  auto_route_generator: ^9.2.2
   build_runner: ^2.4.8
   drift_dev: ^2.15.0
   flutter_lints: ^5.0.0
