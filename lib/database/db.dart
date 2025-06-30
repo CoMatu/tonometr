@@ -25,6 +25,9 @@ class AppDatabase extends _$AppDatabase {
   Future<int> addMeasurement(MeasurementsCompanion entry) =>
       into(measurements).insert(entry);
   Future<List<Measurement>> getAllMeasurements() => select(measurements).get();
+  Future<int> deleteMeasurement(Measurement measurement) =>
+      (delete(measurements)
+        ..where((tbl) => tbl.id.equals(measurement.id))).go();
 }
 
 LazyDatabase _openConnection() {

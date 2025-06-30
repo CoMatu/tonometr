@@ -5,7 +5,6 @@ import 'package:tonometr/blood_pressure/ui/blood_pressure_page.dart';
 import 'package:tonometr/charts/ui/chart_page.dart';
 import 'package:tonometr/home/domain/bottom_bar_bloc.dart/bottom_bar_bloc.dart';
 import 'package:tonometr/settings/ui/settings_page.dart';
-import 'package:tonometr/themes/theme_provider.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {

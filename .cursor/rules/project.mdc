@@ -1,0 +1,13 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+1. Always decompose complex UI into smaller, reusable widgets.
+2. Prefer creating dedicated widget classes (StatelessWidget/StatefulWidget) over inline functions.
+3. Avoid using helper functions inside build() to return parts of the UI (e.g., Widget _buildHeader()).
+4. Avoid large monolithic widgets with nested Row/Column/Stack without decomposition.
+5. Move user interaction logic (e.g., onPressed, onTap) outside the UI layer
+6. Use controllers (Bloc) or dedicated classes to manage actions
+7. Avoid writing business logic directly in callbacks inside build()
+8. Avoid inline anonymous functions with complex logic (e.g., onPressed: () { ... })

@@ -11,6 +11,7 @@ import 'package:tonometr/core/initialization/data/models/app_metadata.dart';
 import 'package:tonometr/core/initialization/data/models/dependencies.dart';
 import 'package:tonometr/core/initialization/data/services/device_info_service.dart';
 import 'package:tonometr/core/initialization/data/services/package_info_service.dart';
+import 'package:tonometr/database/db.dart';
 import 'package:tonometr/themes/dark_theme.dart';
 import 'package:tonometr/themes/light_theme.dart';
 
@@ -65,6 +66,9 @@ final Map<String, _InitializationStep> _initializationSteps =
           talker: dependencies.talker,
           settings: const TalkerBlocLoggerSettings(printStateFullData: false),
         );
+      },
+      '... Инициализируем базу данных': (dependencies) async {
+        dependencies.database = AppDatabase();
       },
       '... Инициализируем глобальные зависимости': (dependencies) async {
         final sharedPreferences = await SharedPreferences.getInstance();

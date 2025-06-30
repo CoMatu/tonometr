@@ -7,6 +7,7 @@ import 'package:tonometr/auth/data/auth_client.dart';
 import 'package:tonometr/auth/domain/auth_repository.dart';
 import 'package:tonometr/core/initialization/data/models/app_metadata.dart';
 import 'package:tonometr/core/initialization/ui/inherited_dependencies.dart';
+import 'package:tonometr/database/db.dart';
 
 /// Dependencies
 abstract interface class Dependencies {
@@ -31,6 +32,9 @@ abstract interface class Dependencies {
 
   /// Logger
   abstract final Talker talker;
+
+  /// Database
+  abstract final AppDatabase database;
 }
 
 /// {@template dependencies}
@@ -61,6 +65,9 @@ final class $MutableDependencies implements Dependencies {
   @override
   late Talker talker;
 
+  @override
+  late AppDatabase database;
+
   /// {@macro dependencies}
   Dependencies freeze() => _$ImmutableDependencies(
     appMetadata: appMetadata,
@@ -69,6 +76,7 @@ final class $MutableDependencies implements Dependencies {
     authClient: authClient,
     talker: talker,
     theme: theme,
+    database: database,
   );
 }
 
@@ -80,6 +88,7 @@ final class _$ImmutableDependencies implements Dependencies {
     required this.authClient,
     required this.talker,
     required this.theme,
+    required this.database,
   });
 
   @override
@@ -99,4 +108,7 @@ final class _$ImmutableDependencies implements Dependencies {
 
   @override
   late Talker talker;
+
+  @override
+  final AppDatabase database;
 }
