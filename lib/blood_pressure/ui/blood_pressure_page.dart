@@ -5,74 +5,100 @@ import 'package:auto_route/auto_route.dart';
 class BloodPressurePage extends StatelessWidget {
   const BloodPressurePage({super.key});
 
+  static const fieldWidth = 300.0;
+
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    final _systolicController = TextEditingController();
-    final _diastolicController = TextEditingController();
-    final _pulseController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    final systolicController = TextEditingController();
+    final diastolicController = TextEditingController();
+    final pulseController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Давление')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextFormField(
-                controller: _systolicController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Систолическое давление',
+              SizedBox(
+                width: fieldWidth,
+                child: TextFormField(
+                  controller: systolicController,
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  decoration: const InputDecoration(
+                    labelText: 'Систолическое давление',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введите систолическое давление';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Введите систолическое давление';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _diastolicController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Диастолическое давление',
+              SizedBox(
+                width: fieldWidth,
+                child: TextFormField(
+                  controller: diastolicController,
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  decoration: const InputDecoration(
+                    labelText: 'Диастолическое давление',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введите диастолическое давление';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Введите диастолическое давление';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _pulseController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Пульс'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Введите пульс';
-                  }
-                  return null;
-                },
+              SizedBox(
+                width: fieldWidth,
+                child: TextFormField(
+                  controller: pulseController,
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  decoration: const InputDecoration(labelText: 'Пульс'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введите пульс';
+                    }
+                    return null;
+                  },
+                ),
               ),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
+                    if (formKey.currentState!.validate()) {
                       // TODO: обработка сохранения данных
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Данные сохранены')),
+                        SnackBar(
+                          content: Text(
+                            'Данные сохранены',
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: Colors.white),
+                          ),
+                        ),
                       );
                     }
                   },
-                  child: const Text('Сохранить'),
+                  child: Text(
+                    'Сохранить',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.headlineSmall?.copyWith(color: Colors.white),
+                  ),
                 ),
               ),
             ],

@@ -31,17 +31,6 @@ class _HomePageState extends State<HomePage> {
     return BlocBuilder<BottomBarBloc, BottomBarState>(
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Тонометр'),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.brightness_6),
-                onPressed: () {
-                  ThemeProvider.of(context).toggleTheme();
-                },
-              ),
-            ],
-          ),
           body: IndexedStack(index: state.index, children: _pages),
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: state.index,
