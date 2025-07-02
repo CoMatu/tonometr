@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:drift/drift.dart' hide Column;
+import 'package:tonometr/blood_pressure/ui/dialogs/add_measurement_dialog.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
 import 'package:tonometr/database/db.dart';
+import 'package:tonometr/blood_pressure/domain/blood_pressure_repository.dart';
 
 @RoutePage()
 class BloodPressurePage extends StatefulWidget {
@@ -15,11 +16,13 @@ class BloodPressurePage extends StatefulWidget {
 class _BloodPressurePageState extends State<BloodPressurePage> {
   List<Measurement> _measurements = [];
   bool _isLoading = true;
-  bool _showFab = false;
+  bool _showFab = true;
+  late final BloodPressureRepository _repository;
 
   @override
   void initState() {
     super.initState();
+    _repository = context.dependencies.bloodPressureRepository;
     _loadMeasurements();
     // Показываем модальное окно при запуске
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -30,8 +33,9 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
   Future<void> _loadMeasurements() async {
     setState(() => _isLoading = true);
     try {
-      final measurements =
-          await context.dependencies.database.getAllMeasurements();
+      final measurements = await _repository.getAllMeasurements();
+      // Сортируем по дате создания - самые новые вверху
+      measurements.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       setState(() {
         _measurements = measurements;
         _isLoading = false;
@@ -51,7 +55,7 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
       context: context,
       isScrollControlled: true,
       builder:
-          (context) => _AddMeasurementDialog(
+          (context) => AddMeasurementDialog(
             onSaved: () {
               _loadMeasurements();
               setState(() => _showFab = true);
@@ -82,6 +86,10 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
                   return Card(
                     margin: const EdgeInsets.only(bottom: 12),
                     child: ListTile(
+                      leading: BloodPressureCategoryIndicator(
+                        systolic: measurement.systolic,
+                        diastolic: measurement.diastolic,
+                      ),
                       title: Text(
                         '${measurement.systolic}/${measurement.diastolic} мм рт.ст.',
                         style: const TextStyle(
@@ -159,7 +167,7 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
 
     if (confirmed == true) {
       try {
-        await context.dependencies.database.deleteMeasurement(measurement);
+        await _repository.deleteMeasurement(measurement);
         await _loadMeasurements();
         if (mounted) {
           ScaffoldMessenger.of(
@@ -177,194 +185,34 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
   }
 }
 
-class _AddMeasurementDialog extends StatefulWidget {
-  final VoidCallback onSaved;
-
-  const _AddMeasurementDialog({required this.onSaved});
-
-  @override
-  State<_AddMeasurementDialog> createState() => _AddMeasurementDialogState();
-}
-
-class _AddMeasurementDialogState extends State<_AddMeasurementDialog> {
-  final _formKey = GlobalKey<FormState>();
-  final _systolicController = TextEditingController();
-  final _diastolicController = TextEditingController();
-  final _pulseController = TextEditingController();
-  final _noteController = TextEditingController();
-  bool _isSaving = false;
-
-  static const _fieldWidth = 300.0;
-
-  @override
-  void dispose() {
-    _systolicController.dispose();
-    _diastolicController.dispose();
-    _pulseController.dispose();
-    _noteController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _saveMeasurement() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() => _isSaving = true);
-
-    try {
-      final systolic = int.parse(_systolicController.text);
-      final diastolic = int.parse(_diastolicController.text);
-      final pulse = int.parse(_pulseController.text);
-      final note = _noteController.text.isEmpty ? null : _noteController.text;
-
-      await context.dependencies.database.addMeasurement(
-        MeasurementsCompanion.insert(
-          systolic: systolic,
-          diastolic: diastolic,
-          pulse: pulse,
-          note: Value(note),
-        ),
-      );
-
-      if (mounted) {
-        Navigator.of(context).pop();
-        widget.onSaved();
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Данные сохранены')));
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Ошибка сохранения: $e')));
-      }
-    } finally {
-      setState(() => _isSaving = false);
-    }
-  }
+class BloodPressureCategoryIndicator extends StatelessWidget {
+  final int systolic;
+  final int diastolic;
+  const BloodPressureCategoryIndicator({
+    super.key,
+    required this.systolic,
+    required this.diastolic,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 16,
-        right: 16,
-        top: 16,
-      ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Новое измерение',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: _fieldWidth,
-              child: TextFormField(
-                controller: _systolicController,
-                keyboardType: TextInputType.number,
-                textAlign: TextAlign.center,
-                decoration: const InputDecoration(
-                  labelText: 'Систолическое давление',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Введите систолическое давление';
-                  }
-                  final systolic = int.tryParse(value);
-                  if (systolic == null || systolic <= 0) {
-                    return 'Введите корректное значение';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: _fieldWidth,
-              child: TextFormField(
-                controller: _diastolicController,
-                keyboardType: TextInputType.number,
-                textAlign: TextAlign.center,
-                decoration: const InputDecoration(
-                  labelText: 'Диастолическое давление',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Введите диастолическое давление';
-                  }
-                  final diastolic = int.tryParse(value);
-                  if (diastolic == null || diastolic <= 0) {
-                    return 'Введите корректное значение';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: _fieldWidth,
-              child: TextFormField(
-                controller: _pulseController,
-                keyboardType: TextInputType.number,
-                textAlign: TextAlign.center,
-                decoration: const InputDecoration(labelText: 'Пульс'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Введите пульс';
-                  }
-                  final pulse = int.tryParse(value);
-                  if (pulse == null || pulse <= 0) {
-                    return 'Введите корректное значение';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: _fieldWidth,
-              child: TextFormField(
-                controller: _noteController,
-                maxLines: 2,
-                decoration: const InputDecoration(
-                  labelText: 'Заметка (необязательно)',
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed:
-                        _isSaving ? null : () => Navigator.of(context).pop(),
-                    child: const Text('Отмена'),
-                  ),
-                ),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: _isSaving ? null : _saveMeasurement,
-                    child:
-                        _isSaving
-                            ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                            : const Text('Сохранить'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
+    final color = _getCategoryColor(systolic, diastolic);
+    return Container(
+      width: 20,
+      height: 20,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
+  }
+}
+
+Color _getCategoryColor(int systolic, int diastolic) {
+  if (systolic >= 160 || diastolic >= 100) {
+    return Colors.red;
+  } else if (systolic >= 140 || diastolic >= 90) {
+    return Colors.orange;
+  } else if (systolic >= 130 || diastolic >= 85) {
+    return Colors.amber;
+  } else {
+    return Colors.green;
   }
 }

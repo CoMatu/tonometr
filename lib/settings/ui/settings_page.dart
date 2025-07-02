@@ -8,21 +8,22 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Text('Settings'),
-          Placeholder(color: Colors.amber),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: OutlinedButton(
-              onPressed: () {
-                ThemeProvider.of(context).toggleTheme();
-              },
-              child: const Text('Switch theme'),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Settings')),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: OutlinedButton(
+                onPressed: () {
+                  ThemeProvider.of(context).toggleTheme();
+                },
+                child: const Text('Switch theme'),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

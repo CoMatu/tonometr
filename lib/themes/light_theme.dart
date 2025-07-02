@@ -47,12 +47,10 @@ final lightTheme = ThemeData(
     primary: Color(0xFF2E7D8A),
     secondary: Color(0xFF4CAF50),
     surface: Colors.white,
-    background: Color(0xFFF8FCFC),
     error: Color(0xFFE57373),
     onPrimary: Colors.white,
     onSecondary: Colors.white,
     onSurface: Color(0xFF333333),
-    onBackground: Color(0xFF333333),
     onError: Colors.white,
   ),
 );

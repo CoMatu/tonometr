@@ -30,6 +30,7 @@ dependencies:
     path: packages/storage/persistent_storage
   provider: ^6.1.2
   shared_preferences: ^2.5.3
+  sqlite3_flutter_libs: ^0.5.15
   storage:
     path: packages/storage/storage
   talker: ^4.9.1

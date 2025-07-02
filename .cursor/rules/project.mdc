@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 1. Always decompose complex UI into smaller, reusable widgets.
 2. Prefer creating dedicated widget classes (StatelessWidget/StatefulWidget) over inline functions.

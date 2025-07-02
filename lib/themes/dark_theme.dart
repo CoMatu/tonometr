@@ -47,12 +47,10 @@ final darkTheme = ThemeData(
     primary: Color(0xFF1A5F6B),
     secondary: Color(0xFF388E3C),
     surface: Color(0xFF1E2A2C),
-    background: Color(0xFF0A1A1C),
     error: Color(0xFFD32F2F),
     onPrimary: Colors.white,
     onSecondary: Colors.white,
     onSurface: Colors.white,
-    onBackground: Colors.white,
     onError: Colors.white,
   ),
 );
