@@ -24,10 +24,6 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
     super.initState();
     _repository = context.dependencies.bloodPressureRepository;
     _loadMeasurements();
-    // Показываем модальное окно при запуске
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showAddMeasurementDialog();
-    });
   }
 
   Future<void> _loadMeasurements() async {
