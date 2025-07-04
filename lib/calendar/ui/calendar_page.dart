@@ -19,6 +19,8 @@ class _CalendarPageState extends State<CalendarPage> {
   late DateTime _selectedDay;
   late Map<DateTime, List<Measurement>> _events;
   late BloodPressureRepository _repository;
+  DateTime? _firstDay;
+  DateTime? _lastDay;
 
   @override
   void initState() {
@@ -47,13 +49,43 @@ class _CalendarPageState extends State<CalendarPage> {
       eventsMap[date]!.add(measurement);
     }
 
+    // Определяем первый и последний день с измерениями
+    if (measurements.isNotEmpty) {
+      final sortedMeasurements = List<Measurement>.from(measurements)
+        ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
+      _firstDay = DateTime(
+        sortedMeasurements.first.createdAt.year,
+        sortedMeasurements.first.createdAt.month,
+        1, // Первый день месяца
+      );
+
+      _lastDay = DateTime(
+        sortedMeasurements.last.createdAt.year,
+        sortedMeasurements.last.createdAt.month + 1,
+        0, // Последний день месяца
+      );
+
+      // Если сегодня в пределах измерений, фокусируемся на сегодня
+      final today = DateTime.now();
+      if (today.isAfter(_firstDay!) && today.isBefore(_lastDay!)) {
+        _focusedDay = today;
+        _selectedDay = today;
+      } else {
+        // Иначе фокусируемся на последнем месяце с измерениями
+        _focusedDay = _lastDay!;
+        _selectedDay = _lastDay!;
+      }
+    }
+
     setState(() {
       _events = eventsMap;
     });
   }
 
   List<Measurement> _getEventsForDay(DateTime day) {
-    return _events[day] ?? [];
+    final normalizedDay = DateTime(day.year, day.month, day.day);
+    return _events[normalizedDay] ?? [];
   }
 
   @override
@@ -64,8 +96,8 @@ class _CalendarPageState extends State<CalendarPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: TableCalendar<Measurement>(
-        firstDay: DateTime.utc(2020, 1, 1),
-        lastDay: DateTime.utc(2030, 12, 31),
+        firstDay: _firstDay ?? DateTime.utc(2020, 1, 1),
+        lastDay: _lastDay ?? DateTime.utc(2030, 12, 31),
         focusedDay: _focusedDay,
         selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
         eventLoader: _getEventsForDay,
@@ -80,9 +112,12 @@ class _CalendarPageState extends State<CalendarPage> {
             _focusedDay = focusedDay;
           });
         },
+        rowHeight: 80,
+        daysOfWeekHeight: 40,
         calendarStyle: const CalendarStyle(
           outsideDaysVisible: false,
           weekendTextStyle: TextStyle(color: Colors.red),
+          markerSize: 0,
         ),
         calendarBuilders: CalendarBuilders(
           defaultBuilder: (context, day, focusedDay) {

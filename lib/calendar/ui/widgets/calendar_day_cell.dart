@@ -68,6 +68,7 @@ class CalendarDayCell extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.all(2),
+      constraints: const BoxConstraints(minHeight: 60),
       decoration: BoxDecoration(
         color: effectiveBackgroundColor,
         border: Border.all(
@@ -95,7 +96,7 @@ class CalendarDayCell extends StatelessWidget {
               Text(
                 _getAveragePressure(),
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                   color: effectiveTextColor,
                 ),
