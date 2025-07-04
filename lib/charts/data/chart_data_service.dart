@@ -122,12 +122,34 @@ class ChartDataService {
         color: Colors.red.withValues(alpha: 0.5),
         strokeWidth: 1,
         dashArray: [5, 5],
+        label: HorizontalLineLabel(
+          show: true,
+          alignment: Alignment.topRight,
+          padding: const EdgeInsets.only(right: 8, top: 4),
+          style: TextStyle(
+            color: Colors.red.withValues(alpha: 0.8),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+          labelResolver: (line) => '160',
+        ),
       ),
       HorizontalLine(
         y: 100,
         color: Colors.red.withValues(alpha: 0.5),
         strokeWidth: 1,
         dashArray: [5, 5],
+        label: HorizontalLineLabel(
+          show: true,
+          alignment: Alignment.topRight,
+          padding: const EdgeInsets.only(right: 8, top: 4),
+          style: TextStyle(
+            color: Colors.red.withValues(alpha: 0.8),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+          labelResolver: (line) => '100',
+        ),
       ),
       // Повышенное давление (оранжевая линия)
       HorizontalLine(
@@ -135,12 +157,34 @@ class ChartDataService {
         color: Colors.orange.withValues(alpha: 0.5),
         strokeWidth: 1,
         dashArray: [5, 5],
+        label: HorizontalLineLabel(
+          show: true,
+          alignment: Alignment.topRight,
+          padding: const EdgeInsets.only(right: 8, top: 4),
+          style: TextStyle(
+            color: Colors.orange.withValues(alpha: 0.8),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+          labelResolver: (line) => '140',
+        ),
       ),
       HorizontalLine(
         y: 90,
         color: Colors.orange.withValues(alpha: 0.5),
         strokeWidth: 1,
         dashArray: [5, 5],
+        label: HorizontalLineLabel(
+          show: true,
+          alignment: Alignment.topRight,
+          padding: const EdgeInsets.only(right: 8, top: 4),
+          style: TextStyle(
+            color: Colors.orange.withValues(alpha: 0.8),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+          labelResolver: (line) => '90',
+        ),
       ),
       // Нормальное повышенное давление (желтая линия)
       HorizontalLine(
@@ -148,12 +192,34 @@ class ChartDataService {
         color: Colors.amber.withValues(alpha: 0.5),
         strokeWidth: 1,
         dashArray: [5, 5],
+        label: HorizontalLineLabel(
+          show: true,
+          alignment: Alignment.topRight,
+          padding: const EdgeInsets.only(right: 8, top: 4),
+          style: TextStyle(
+            color: Colors.amber.withValues(alpha: 0.8),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+          labelResolver: (line) => '130',
+        ),
       ),
       HorizontalLine(
         y: 85,
         color: Colors.amber.withValues(alpha: 0.5),
         strokeWidth: 1,
         dashArray: [5, 5],
+        label: HorizontalLineLabel(
+          show: true,
+          alignment: Alignment.topRight,
+          padding: const EdgeInsets.only(right: 8, top: 4),
+          style: TextStyle(
+            color: Colors.amber.withValues(alpha: 0.8),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+          labelResolver: (line) => '85',
+        ),
       ),
     ];
   }
