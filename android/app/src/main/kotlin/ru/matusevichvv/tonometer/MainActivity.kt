@@ -1,4 +1,4 @@
-package com.example.tonometr
+package ru.matusevichvv.tonometer
 
 import io.flutter.embedding.android.FlutterActivity
 

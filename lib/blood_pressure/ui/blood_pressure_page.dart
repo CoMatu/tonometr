@@ -4,6 +4,8 @@ import 'package:tonometr/blood_pressure/ui/dialogs/add_measurement_dialog.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
 import 'package:tonometr/database/db.dart';
 import 'package:tonometr/blood_pressure/domain/blood_pressure_repository.dart';
+import 'package:tonometr/core/utils/datetime_utils.dart';
+import 'package:tonometr/core/utils/color_utils.dart';
 
 @RoutePage()
 class BloodPressurePage extends StatefulWidget {
@@ -79,41 +81,9 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
                 itemCount: _measurements.length,
                 itemBuilder: (context, index) {
                   final measurement = _measurements[index];
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    child: ListTile(
-                      leading: BloodPressureCategoryIndicator(
-                        systolic: measurement.systolic,
-                        diastolic: measurement.diastolic,
-                      ),
-                      title: Text(
-                        '${measurement.systolic}/${measurement.diastolic} мм рт.ст.',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Пульс: ${measurement.pulse} уд/мин'),
-                          if (measurement.note != null &&
-                              measurement.note!.isNotEmpty)
-                            Text('Заметка: ${measurement.note}'),
-                          Text(
-                            _formatDate(measurement.createdAt),
-                            style: TextStyle(
-                              color:
-                                  Theme.of(context).textTheme.bodySmall?.color,
-                            ),
-                          ),
-                        ],
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () => _deleteMeasurement(measurement),
-                      ),
-                    ),
+                  return BloodPressureCard(
+                    measurement: measurement,
+                    onDelete: () => _deleteMeasurement(measurement),
                   );
                 },
               ),
@@ -125,20 +95,6 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
               )
               : null,
     );
-  }
-
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final measurementDate = DateTime(date.year, date.month, date.day);
-
-    if (measurementDate == today) {
-      return 'Сегодня в ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
-    } else if (measurementDate == today.subtract(const Duration(days: 1))) {
-      return 'Вчера в ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
-    } else {
-      return '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year} в ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
-    }
   }
 
   Future<void> _deleteMeasurement(Measurement measurement) async {
@@ -181,6 +137,52 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
   }
 }
 
+class BloodPressureCard extends StatelessWidget {
+  final Measurement measurement;
+  final VoidCallback onDelete;
+
+  const BloodPressureCard({
+    super.key,
+    required this.measurement,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        leading: BloodPressureCategoryIndicator(
+          systolic: measurement.systolic,
+          diastolic: measurement.diastolic,
+        ),
+        title: Text(
+          '${measurement.systolic}/${measurement.diastolic} мм рт.ст.',
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Пульс: ${measurement.pulse} уд/мин'),
+            if (measurement.note != null && measurement.note!.isNotEmpty)
+              Text('Заметка: ${measurement.note}'),
+            Text(
+              formatDate(measurement.createdAt),
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodySmall?.color,
+              ),
+            ),
+          ],
+        ),
+        trailing: IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: onDelete,
+        ),
+      ),
+    );
+  }
+}
+
 class BloodPressureCategoryIndicator extends StatelessWidget {
   final int systolic;
   final int diastolic;
@@ -192,23 +194,11 @@ class BloodPressureCategoryIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _getCategoryColor(systolic, diastolic);
+    final color = getCategoryColor(systolic, diastolic);
     return Container(
       width: 20,
       height: 20,
       decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
-  }
-}
-
-Color _getCategoryColor(int systolic, int diastolic) {
-  if (systolic >= 160 || diastolic >= 100) {
-    return Colors.red;
-  } else if (systolic >= 140 || diastolic >= 90) {
-    return Colors.orange;
-  } else if (systolic >= 130 || diastolic >= 85) {
-    return Colors.amber;
-  } else {
-    return Colors.green;
   }
 }
