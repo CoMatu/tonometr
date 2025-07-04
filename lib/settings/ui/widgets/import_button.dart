@@ -65,6 +65,7 @@ class _ImportButtonState extends State<ImportButton> {
                     measurements,
                   );
                   if (mounted) {
+                    // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
