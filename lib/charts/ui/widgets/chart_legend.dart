@@ -5,16 +5,13 @@ class ChartLegend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _LegendItem(color: Colors.red, label: 'Систолическое'),
-          _LegendItem(color: Colors.blue, label: 'Диастолическое'),
-          _LegendItem(color: Colors.green, label: 'Пульс'),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _LegendItem(color: Colors.red, label: 'Систолическое'),
+        _LegendItem(color: Colors.blue, label: 'Диастолическое'),
+        _LegendItem(color: Colors.green, label: 'Пульс'),
+      ],
     );
   }
 }

@@ -118,22 +118,40 @@ class _ChartPageState extends State<ChartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('График давления')),
+      appBar: AppBar(title: const Text('График давления'), toolbarHeight: 48),
       body:
           _isLoading
               ? const Center(child: CircularProgressIndicator())
               : Column(
                 children: [
-                  PeriodSelector(
-                    selectedPeriod: _selectedPeriod,
-                    onPeriodChanged: _onPeriodChanged,
-                    onCustomPeriodPressed: _showCustomPeriodDialog,
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    child: PeriodSelector(
+                      selectedPeriod: _selectedPeriod,
+                      onPeriodChanged: _onPeriodChanged,
+                      onCustomPeriodPressed: _showCustomPeriodDialog,
+                    ),
                   ),
-                  const ChartLegend(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    child: const ChartLegend(),
+                  ),
                   Expanded(
-                    child: BloodPressureChart(
-                      measurements: _filteredMeasurements,
-                      period: _selectedPeriod,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      child: BloodPressureChart(
+                        measurements: _filteredMeasurements,
+                        period: _selectedPeriod,
+                      ),
                     ),
                   ),
                 ],

@@ -48,6 +48,53 @@ class ChartDataService {
     }).toList();
   }
 
+  /// Возвращает список индексов подписей, которые должны отображаться на оси X
+  static List<int> getVisibleLabelIndices(List<Measurement> measurements) {
+    if (measurements.isEmpty) return [];
+
+    final int totalCount = measurements.length;
+
+    // Определяем количество подписей для отображения в зависимости от общего количества
+    int visibleCount;
+    if (totalCount <= 7) {
+      // Для недели показываем все подписи
+      visibleCount = totalCount;
+    } else if (totalCount <= 14) {
+      // Для 2 недель показываем каждую вторую
+      visibleCount = (totalCount / 2).ceil();
+    } else if (totalCount <= 30) {
+      // Для месяца показываем каждую третью
+      visibleCount = (totalCount / 3).ceil();
+    } else if (totalCount <= 60) {
+      // Для 2 месяцев показываем каждую четвертую
+      visibleCount = (totalCount / 4).ceil();
+    } else {
+      // Для большего количества показываем максимум 8 подписей
+      visibleCount = 8;
+    }
+
+    // Вычисляем шаг между подписями
+    final int step =
+        totalCount > visibleCount ? (totalCount / visibleCount).floor() : 1;
+
+    // Создаем список индексов для отображения
+    List<int> indices = [];
+    for (int i = 0; i < totalCount; i += step) {
+      indices.add(i);
+      if (indices.length >= visibleCount) break;
+    }
+
+    // Всегда добавляем последний индекс, если его еще нет
+    if (indices.isNotEmpty && indices.last != totalCount - 1) {
+      indices.add(totalCount - 1);
+    }
+
+    // Убираем дубликаты и сортируем
+    indices = indices.toSet().toList()..sort();
+
+    return indices;
+  }
+
   static String formatMeasurementTime(DateTime dateTime) {
     final hour = dateTime.hour.toString().padLeft(2, '0');
     final minute = dateTime.minute.toString().padLeft(2, '0');
