@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tonometr/blood_pressure/ui/blood_pressure_page.dart';
+import 'package:tonometr/calendar/ui/calendar_page.dart';
 import 'package:tonometr/charts/ui/chart_page.dart';
 import 'package:tonometr/home/domain/bottom_bar_bloc.dart/bottom_bar_bloc.dart';
 import 'package:tonometr/settings/ui/settings_page.dart';
@@ -17,6 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const BloodPressurePage(),
+    const CalendarPage(),
     const ChartPage(),
     const SettingsPage(),
   ];
@@ -34,10 +36,18 @@ class _HomePageState extends State<HomePage> {
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: state.index,
             onTap: _onTabTapped,
+            selectedItemColor: Theme.of(context).colorScheme.primary,
+            unselectedItemColor:
+                Theme.of(context).iconTheme.color?.withOpacity(0.6) ??
+                Colors.grey,
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.water_drop_outlined),
                 label: 'Давление',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_month),
+                label: 'Календарь',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.bar_chart),
