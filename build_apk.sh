@@ -1,0 +1,1 @@
+flutter build apk --analyze-size --target-platform=android-arm64 --dart-define-from-file=lib/config/dev.json --split-per-abi

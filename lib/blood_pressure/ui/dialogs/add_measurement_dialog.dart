@@ -101,107 +101,111 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 16,
-        right: 16,
-        top: 16,
-      ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Новое измерение',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            AppTextField(
-              controller: _systolicController,
-              focusNode: _systolicFocus,
-              label: 'Систолическое давление',
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Введите систолическое давление';
-                }
-                final systolic = int.tryParse(value);
-                if (systolic == null || systolic <= 0) {
-                  return 'Введите корректное значение';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            AppTextField(
-              controller: _diastolicController,
-              focusNode: _diastolicFocus,
-              label: 'Диастолическое давление',
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Введите диастолическое давление';
-                }
-                final diastolic = int.tryParse(value);
-                if (diastolic == null || diastolic <= 0) {
-                  return 'Введите корректное значение';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            AppTextField(
-              controller: _pulseController,
-              focusNode: _pulseFocus,
-              label: 'Пульс',
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Введите пульс';
-                }
-                final pulse = int.tryParse(value);
-                if (pulse == null || pulse <= 0) {
-                  return 'Введите корректное значение';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            AppTextField(
-              controller: _noteController,
-              label: 'Заметка (необязательно)',
-              maxLines: 2,
-              keyboardType: TextInputType.text,
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed:
-                        _isSaving ? null : () => Navigator.of(context).pop(),
-                    child: const Text('Отмена'),
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 16,
+          right: 16,
+          top: 16,
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Новое измерение',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              AppTextField(
+                controller: _systolicController,
+                focusNode: _systolicFocus,
+                label: 'Систолическое давление',
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Введите систолическое давление';
+                  }
+                  final systolic = int.tryParse(value);
+                  if (systolic == null || systolic <= 0) {
+                    return 'Введите корректное значение';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              AppTextField(
+                controller: _diastolicController,
+                focusNode: _diastolicFocus,
+                label: 'Диастолическое давление',
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Введите диастолическое давление';
+                  }
+                  final diastolic = int.tryParse(value);
+                  if (diastolic == null || diastolic <= 0) {
+                    return 'Введите корректное значение';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              AppTextField(
+                controller: _pulseController,
+                focusNode: _pulseFocus,
+                label: 'Пульс',
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Введите пульс';
+                  }
+                  final pulse = int.tryParse(value);
+                  if (pulse == null || pulse <= 0) {
+                    return 'Введите корректное значение';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              AppTextField(
+                controller: _noteController,
+                label: 'Заметка (необязательно)',
+                maxLines: 2,
+                keyboardType: TextInputType.text,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed:
+                          _isSaving ? null : () => Navigator.of(context).pop(),
+                      child: const Text('Отмена'),
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: _isSaving ? null : _saveMeasurement,
-                    child:
-                        _isSaving
-                            ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                            : const Text('Сохранить'),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _isSaving ? null : _saveMeasurement,
+                      child:
+                          _isSaving
+                              ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                              : const Text('Сохранить'),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-          ],
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );
