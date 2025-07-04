@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:tonometr/blood_pressure/ui/cards/blood_pressure_card.dart';
 import 'package:tonometr/blood_pressure/ui/dialogs/add_measurement_dialog.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
 import 'package:tonometr/database/db.dart';
 import 'package:tonometr/blood_pressure/domain/blood_pressure_repository.dart';
-import 'package:tonometr/core/utils/datetime_utils.dart';
-import 'package:tonometr/core/utils/color_utils.dart';
 
 @RoutePage()
 class BloodPressurePage extends StatefulWidget {
@@ -134,71 +133,5 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
         }
       }
     }
-  }
-}
-
-class BloodPressureCard extends StatelessWidget {
-  final Measurement measurement;
-  final VoidCallback onDelete;
-
-  const BloodPressureCard({
-    super.key,
-    required this.measurement,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        leading: BloodPressureCategoryIndicator(
-          systolic: measurement.systolic,
-          diastolic: measurement.diastolic,
-        ),
-        title: Text(
-          '${measurement.systolic}/${measurement.diastolic} мм рт.ст.',
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Пульс: ${measurement.pulse} уд/мин'),
-            if (measurement.note != null && measurement.note!.isNotEmpty)
-              Text('Заметка: ${measurement.note}'),
-            Text(
-              formatDate(measurement.createdAt),
-              style: TextStyle(
-                color: Theme.of(context).textTheme.bodySmall?.color,
-              ),
-            ),
-          ],
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.delete),
-          onPressed: onDelete,
-        ),
-      ),
-    );
-  }
-}
-
-class BloodPressureCategoryIndicator extends StatelessWidget {
-  final int systolic;
-  final int diastolic;
-  const BloodPressureCategoryIndicator({
-    super.key,
-    required this.systolic,
-    required this.diastolic,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = getCategoryColor(systolic, diastolic);
-    return Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-    );
   }
 }
