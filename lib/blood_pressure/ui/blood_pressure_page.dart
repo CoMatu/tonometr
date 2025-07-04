@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:tonometr/blood_pressure/ui/cards/blood_pressure_card.dart';
@@ -5,6 +6,7 @@ import 'package:tonometr/blood_pressure/ui/dialogs/add_measurement_dialog.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
 import 'package:tonometr/database/db.dart';
 import 'package:tonometr/blood_pressure/domain/blood_pressure_repository.dart';
+import 'package:tonometr/core/services/event_bus.dart';
 
 @RoutePage()
 class BloodPressurePage extends StatefulWidget {
@@ -19,12 +21,28 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
   bool _isLoading = true;
   bool _showFab = true;
   late final BloodPressureRepository _repository;
+  StreamSubscription<DataChangedEvent>? _eventSubscription;
 
   @override
   void initState() {
     super.initState();
     _repository = context.dependencies.bloodPressureRepository;
     _loadMeasurements();
+    _subscribeToEvents();
+  }
+
+  void _subscribeToEvents() {
+    _eventSubscription = EventBus().on<DataChangedEvent>().listen((event) {
+      if (event.dataType == 'measurements' && mounted) {
+        _loadMeasurements();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _eventSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadMeasurements() async {
@@ -120,6 +138,7 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
       try {
         await _repository.deleteMeasurement(measurement);
         await _loadMeasurements();
+        EventBus().emit(DataChangedEvent('measurements'));
         if (mounted) {
           ScaffoldMessenger.of(
             context,

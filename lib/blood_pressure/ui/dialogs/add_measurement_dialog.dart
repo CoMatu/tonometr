@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
 import 'package:tonometr/core/ui_kit/text_fields/app_text_field.dart';
 import 'package:tonometr/database/db.dart';
+import 'package:tonometr/core/services/event_bus.dart';
 
 class AddMeasurementDialog extends StatefulWidget {
   final VoidCallback onSaved;
@@ -84,6 +85,7 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
       if (mounted) {
         Navigator.of(context).pop();
         widget.onSaved();
+        EventBus().emit(DataChangedEvent('measurements'));
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Данные сохранены')));
