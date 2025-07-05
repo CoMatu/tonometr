@@ -44,3 +44,8 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /AppIcons
+
+# Keystore files
+android/app/release-key.jks
+android/app/*.jks
+android/app/keystore.properties

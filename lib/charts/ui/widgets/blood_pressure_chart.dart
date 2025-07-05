@@ -185,13 +185,13 @@ class BloodPressureChart extends StatelessWidget {
                       Color color = Colors.white;
 
                       if (barSpot.barIndex == 0) {
-                        label = 'Систолическое: ${measurement.systolic}';
+                        label = 'S: ${measurement.systolic}';
                         color = Colors.red;
                       } else if (barSpot.barIndex == 1) {
-                        label = 'Диастолическое: ${measurement.diastolic}';
+                        label = 'D: ${measurement.diastolic}';
                         color = Colors.blue;
                       } else if (barSpot.barIndex == 2) {
-                        label = 'Пульс: ${measurement.pulse}';
+                        label = 'P: ${measurement.pulse}';
                         color = Colors.green;
                       }
 

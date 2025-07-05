@@ -79,10 +79,74 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
     );
   }
 
+  void _showPrivacyDialog() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('О конфиденциальности'),
+            content: const Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Colors.blue, size: 20),
+                    SizedBox(width: 8),
+                    Text(
+                      'Конфиденциальность данных',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12),
+                Text(
+                  '• Приложение не собирает и не хранит персональные данные',
+                  style: TextStyle(fontSize: 14),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '• Все данные сохраняются только в памяти устройства',
+                  style: TextStyle(fontSize: 14),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '• Данные не передаются на внешние серверы',
+                  style: TextStyle(fontSize: 14),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '• Вы полностью контролируете свои данные',
+                  style: TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Понятно'),
+              ),
+            ],
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Давление')),
+      appBar: AppBar(
+        title: const Text('Давление'),
+        actions: [
+          IconButton(
+            onPressed: _showPrivacyDialog,
+            icon: const Icon(Icons.help_outline),
+            tooltip: 'Справка',
+          ),
+        ],
+      ),
       body:
           _isLoading
               ? const Center(child: CircularProgressIndicator())

@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
             onTap: _onTabTapped,
             selectedItemColor: Theme.of(context).colorScheme.primary,
             unselectedItemColor:
-                Theme.of(context).iconTheme.color?.withOpacity(0.6) ??
+                Theme.of(context).iconTheme.color?.withValues(alpha: 0.6) ??
                 Colors.grey,
             items: const [
               BottomNavigationBarItem(
