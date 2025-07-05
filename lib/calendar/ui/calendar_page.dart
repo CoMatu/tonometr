@@ -6,6 +6,7 @@ import 'package:tonometr/blood_pressure/domain/blood_pressure_repository.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
 import 'package:tonometr/database/db.dart';
 import 'package:tonometr/calendar/ui/widgets/calendar_day_cell.dart';
+import 'package:tonometr/calendar/ui/dialogs/day_measurements_dialog.dart';
 
 @RoutePage()
 class CalendarPage extends StatefulWidget {
@@ -76,6 +77,18 @@ class _CalendarPageState extends State<CalendarPage> {
             _selectedDay = selectedDay;
             _focusedDay = focusedDay;
           });
+
+          final events = _getEventsForDay(selectedDay);
+          if (events.isNotEmpty) {
+            showDialog(
+              context: context,
+              builder:
+                  (context) => DayMeasurementsDialog(
+                    selectedDay: selectedDay,
+                    measurements: events,
+                  ),
+            );
+          }
         },
         onPageChanged: (focusedDay) {
           setState(() {
