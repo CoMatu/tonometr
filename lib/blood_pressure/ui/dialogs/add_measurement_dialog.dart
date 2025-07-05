@@ -192,58 +192,69 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
                 ),
               ),
               const SizedBox(height: 16),
-              AppTextField(
-                controller: _systolicController,
-                focusNode: _systolicFocus,
-                label: 'Систолическое давление',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Введите систолическое давление';
-                  }
-                  final systolic = int.tryParse(value);
-                  if (systolic == null || systolic <= 0) {
-                    return 'Введите корректное значение';
-                  }
-                  return null;
-                },
+              Row(
+                children: [
+                  Expanded(
+                    child: AppTextField(
+                      controller: _systolicController,
+                      focusNode: _systolicFocus,
+                      label: 'Систолическое',
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Введите систолическое давление';
+                        }
+                        final systolic = int.tryParse(value);
+                        if (systolic == null || systolic <= 0) {
+                          return 'Введите корректное значение';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: AppTextField(
+                      controller: _diastolicController,
+                      focusNode: _diastolicFocus,
+                      label: 'Диастолическое',
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Введите диастолическое давление';
+                        }
+                        final diastolic = int.tryParse(value);
+                        if (diastolic == null || diastolic <= 0) {
+                          return 'Введите корректное значение';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: AppTextField(
+                      controller: _pulseController,
+                      focusNode: _pulseFocus,
+                      label: 'Пульс',
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Введите пульс';
+                        }
+                        final pulse = int.tryParse(value);
+                        if (pulse == null || pulse <= 0) {
+                          return 'Введите корректное значение';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
               AppTextField(
-                controller: _diastolicController,
-                focusNode: _diastolicFocus,
-                label: 'Диастолическое давление',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Введите диастолическое давление';
-                  }
-                  final diastolic = int.tryParse(value);
-                  if (diastolic == null || diastolic <= 0) {
-                    return 'Введите корректное значение';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              AppTextField(
-                controller: _pulseController,
-                focusNode: _pulseFocus,
-                label: 'Пульс',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Введите пульс';
-                  }
-                  final pulse = int.tryParse(value);
-                  if (pulse == null || pulse <= 0) {
-                    return 'Введите корректное значение';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              AppTextField(
+                width: double.infinity,
                 textAlign: TextAlign.start,
                 controller: _noteController,
                 label: 'Заметка (необязательно)',
