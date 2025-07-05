@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tonometr/blood_pressure/domain/blood_pressure_repository.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
+import 'package:tonometr/core/services/event_bus.dart';
 import 'package:tonometr/database/db.dart';
 import 'package:tonometr/calendar/ui/widgets/calendar_day_cell.dart';
 import 'package:tonometr/calendar/ui/dialogs/day_measurements_dialog.dart';
@@ -21,6 +24,7 @@ class _CalendarPageState extends State<CalendarPage> {
   late DateTime _selectedDay;
   late Map<DateTime, List<Measurement>> _events;
   late BloodPressureRepository _repository;
+  StreamSubscription<DataChangedEvent>? _eventSubscription;
 
   @override
   void initState() {
@@ -30,6 +34,21 @@ class _CalendarPageState extends State<CalendarPage> {
     _events = {};
     _repository = context.dependencies.bloodPressureRepository;
     _loadMeasurements();
+    _subscribeToEvents();
+  }
+
+  @override
+  void dispose() {
+    _eventSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _subscribeToEvents() {
+    _eventSubscription = EventBus().on<DataChangedEvent>().listen((event) {
+      if (event.dataType == 'measurements' && mounted) {
+        _loadMeasurements();
+      }
+    });
   }
 
   Future<void> _loadMeasurements() async {
