@@ -26,7 +26,6 @@ class BloodPressureChart extends StatelessWidget {
 
     final systolicData = ChartDataService.prepareSystolicData(measurements);
     final diastolicData = ChartDataService.prepareDiastolicData(measurements);
-    final pulseData = ChartDataService.preparePulseData(measurements);
     final xAxisLabels = ChartDataService.prepareXAxisLabels(measurements);
     final visibleLabelIndices = ChartDataService.getVisibleLabelIndices(
       measurements,
@@ -149,26 +148,6 @@ class BloodPressureChart extends StatelessWidget {
                   ),
                   belowBarData: BarAreaData(show: false),
                 ),
-                // Пульс
-                LineChartBarData(
-                  spots: pulseData,
-                  isCurved: true,
-                  color: Colors.green,
-                  barWidth: 3,
-                  isStrokeCapRound: true,
-                  dotData: FlDotData(
-                    show: true,
-                    getDotPainter: (spot, percent, barData, index) {
-                      return FlDotCirclePainter(
-                        radius: 4,
-                        color: Colors.green,
-                        strokeWidth: 2,
-                        strokeColor: Colors.white,
-                      );
-                    },
-                  ),
-                  belowBarData: BarAreaData(show: false),
-                ),
               ],
               extraLinesData: ExtraLinesData(
                 horizontalLines: ChartDataService.getHypertensionLines(),
@@ -190,9 +169,6 @@ class BloodPressureChart extends StatelessWidget {
                       } else if (barSpot.barIndex == 1) {
                         label = 'D: ${measurement.diastolic}';
                         color = Colors.blue;
-                      } else if (barSpot.barIndex == 2) {
-                        label = 'P: ${measurement.pulse}';
-                        color = Colors.green;
                       }
 
                       return LineTooltipItem(
