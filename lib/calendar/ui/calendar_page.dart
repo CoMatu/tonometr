@@ -60,11 +60,9 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Календарь'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
+      appBar: AppBar(title: const Text('Календарь')),
       body: TableCalendar<Measurement>(
         locale: 'ru_RU',
         firstDay: DateTime.utc(2020, 1, 1),
@@ -92,6 +90,7 @@ class _CalendarPageState extends State<CalendarPage> {
           markerSize: 0,
         ),
 
+        availableCalendarFormats: const {CalendarFormat.month: 'Месяц'},
         calendarBuilders: CalendarBuilders(
           defaultBuilder: (context, day, focusedDay) {
             final events = _getEventsForDay(day);
@@ -123,6 +122,8 @@ class _CalendarPageState extends State<CalendarPage> {
                       day.weekday == DateTime.sunday ||
                               day.weekday == DateTime.saturday
                           ? Colors.red
+                          : isDarkMode
+                          ? Colors.white
                           : Colors.black,
                 ),
               ),

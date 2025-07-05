@@ -49,11 +49,12 @@ class CalendarDayCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final hasEvents = measurements.isNotEmpty;
     final effectiveBackgroundColor =
         backgroundColor ??
         (isSelected
-            ? Theme.of(context).colorScheme.primary
+            ? Colors.grey.withValues(alpha: isDarkMode ? 0.3 : 0.2)
             : isToday
             ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
             : Colors.transparent);
@@ -61,9 +62,13 @@ class CalendarDayCell extends StatelessWidget {
     final effectiveTextColor =
         textColor ??
         (isSelected
-            ? Theme.of(context).colorScheme.onPrimary
-            : hasEvents
             ? Colors.black
+            : hasEvents
+            ? isDarkMode
+                ? Colors.grey
+                : Colors.black
+            : isDarkMode
+            ? Colors.white
             : Colors.grey);
 
     return Container(
@@ -85,6 +90,8 @@ class CalendarDayCell extends StatelessWidget {
               '${day.day}',
               style: TextStyle(
                 color: effectiveTextColor,
+                fontStyle: FontStyle.italic,
+                decoration: TextDecoration.underline,
                 fontWeight:
                     (hasEvents || isSelected || isToday)
                         ? FontWeight.bold
@@ -95,10 +102,12 @@ class CalendarDayCell extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 _getAveragePressure(),
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: effectiveTextColor,
+                  height: 1,
                 ),
               ),
             ],
