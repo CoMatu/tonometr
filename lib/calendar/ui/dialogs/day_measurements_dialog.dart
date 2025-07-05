@@ -18,6 +18,10 @@ class DayMeasurementsDialog extends StatelessWidget {
     final theme = Theme.of(context);
     final dateString = DateFormat('dd.MM.yyyy').format(selectedDay);
 
+    // Сортируем измерения по времени (самые ранние сверху)
+    final sortedMeasurements = List<Measurement>.from(measurements)
+      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
     return Dialog(
       child: Container(
         constraints: const BoxConstraints(maxHeight: 400),
@@ -58,7 +62,7 @@ class DayMeasurementsDialog extends StatelessWidget {
             ),
             Flexible(
               child:
-                  measurements.isEmpty
+                  sortedMeasurements.isEmpty
                       ? const Center(
                         child: Padding(
                           padding: EdgeInsets.all(24),
@@ -70,9 +74,9 @@ class DayMeasurementsDialog extends StatelessWidget {
                       )
                       : ListView.builder(
                         shrinkWrap: true,
-                        itemCount: measurements.length,
+                        itemCount: sortedMeasurements.length,
                         itemBuilder: (context, index) {
-                          final measurement = measurements[index];
+                          final measurement = sortedMeasurements[index];
                           final timeString = DateFormat(
                             'HH:mm',
                           ).format(measurement.createdAt);
@@ -118,11 +122,11 @@ class DayMeasurementsDialog extends StatelessWidget {
                         },
                       ),
             ),
-            if (measurements.isNotEmpty)
+            if (sortedMeasurements.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  'Всего измерений: ${measurements.length}',
+                  'Всего измерений: ${sortedMeasurements.length}',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.grey,
                   ),

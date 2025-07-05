@@ -151,6 +151,10 @@ class BloodPressureChart extends StatelessWidget {
               ],
               extraLinesData: ExtraLinesData(
                 horizontalLines: ChartDataService.getHypertensionLines(),
+                verticalLines:
+                    period == ChartPeriod.week
+                        ? _getDailyDividers(measurements)
+                        : [],
               ),
               lineTouchData: LineTouchData(
                 enabled: true,
@@ -184,5 +188,48 @@ class BloodPressureChart extends StatelessWidget {
         );
       },
     );
+  }
+
+  List<VerticalLine> _getDailyDividers(List<Measurement> measurements) {
+    final dividers = <VerticalLine>[];
+
+    if (measurements.isEmpty) return dividers;
+
+    // Группируем измерения по дням
+    final days = <DateTime, List<int>>{};
+    for (int i = 0; i < measurements.length; i++) {
+      final measurement = measurements[i];
+      final day = DateTime(
+        measurement.createdAt.year,
+        measurement.createdAt.month,
+        measurement.createdAt.day,
+      );
+
+      if (!days.containsKey(day)) {
+        days[day] = [];
+      }
+      days[day]!.add(i);
+    }
+
+    // Добавляем вертикальные линии между днями
+    final sortedDays = days.keys.toList()..sort();
+    for (int i = 1; i < sortedDays.length; i++) {
+      final previousDay = sortedDays[i - 1];
+
+      // Находим индекс последнего измерения предыдущего дня
+      final lastIndexPreviousDay = days[previousDay]!.last;
+
+      // Добавляем вертикальную линию после последнего измерения предыдущего дня
+      dividers.add(
+        VerticalLine(
+          x: lastIndexPreviousDay + 0.5,
+          color: Colors.grey.withValues(alpha: 0.3),
+          strokeWidth: 1,
+          // dashArray: [5, 5], // Пунктирная линия
+        ),
+      );
+    }
+
+    return dividers;
   }
 }
