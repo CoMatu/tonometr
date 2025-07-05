@@ -3,6 +3,7 @@ import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
 import 'package:tonometr/core/ui_kit/text_fields/app_text_field.dart';
 import 'package:tonometr/database/db.dart';
 import 'package:tonometr/core/services/event_bus.dart';
+import 'package:tonometr/core/utils/datetime_utils.dart';
 
 class AddMeasurementDialog extends StatefulWidget {
   final VoidCallback onSaved;
@@ -23,6 +24,7 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
   final _diastolicFocus = FocusNode();
   final _pulseFocus = FocusNode();
   bool _isSaving = false;
+  DateTime _selectedDateTime = DateTime.now();
 
   @override
   void initState() {
@@ -47,6 +49,34 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
   void _handlePulseInput() {
     if (_pulseController.text.length == 2) {
       FocusScope.of(context).unfocus();
+    }
+  }
+
+  Future<void> _selectDateTime() async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedDateTime,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now().add(const Duration(days: 1)),
+    );
+
+    if (pickedDate != null && mounted) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
+      );
+
+      if (pickedTime != null && mounted) {
+        setState(() {
+          _selectedDateTime = DateTime(
+            pickedDate.year,
+            pickedDate.month,
+            pickedDate.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+        });
+      }
     }
   }
 
@@ -79,7 +109,7 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
         diastolic: diastolic,
         pulse: pulse,
         note: note,
-        createdAt: DateTime.now(),
+        createdAt: _selectedDateTime,
       );
       await repo.addMeasurement(measurement);
       if (mounted) {
@@ -119,6 +149,47 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
               const Text(
                 'Новое измерение',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              InkWell(
+                onTap: _selectDateTime,
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).dividerColor),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.access_time,
+                        color: Theme.of(context).primaryColor,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 2),
+                            Text(
+                              formatDateTime(_selectedDateTime),
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_drop_down,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               AppTextField(
@@ -173,6 +244,7 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
               ),
               const SizedBox(height: 16),
               AppTextField(
+                textAlign: TextAlign.start,
                 controller: _noteController,
                 label: 'Заметка (необязательно)',
                 maxLines: 2,
@@ -189,18 +261,21 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
                     ),
                   ),
                   Expanded(
-                    child: ElevatedButton(
-                      onPressed: _isSaving ? null : _saveMeasurement,
-                      child:
-                          _isSaving
-                              ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                              : const Text('Сохранить'),
+                    child: SizedBox(
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: _isSaving ? null : _saveMeasurement,
+                        child:
+                            _isSaving
+                                ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                : const Text('Сохранить'),
+                      ),
                     ),
                   ),
                 ],
