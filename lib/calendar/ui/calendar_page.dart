@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tonometr/blood_pressure/domain/blood_pressure_repository.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
@@ -19,8 +20,6 @@ class _CalendarPageState extends State<CalendarPage> {
   late DateTime _selectedDay;
   late Map<DateTime, List<Measurement>> _events;
   late BloodPressureRepository _repository;
-  DateTime? _firstDay;
-  DateTime? _lastDay;
 
   @override
   void initState() {
@@ -49,35 +48,6 @@ class _CalendarPageState extends State<CalendarPage> {
       eventsMap[date]!.add(measurement);
     }
 
-    // Определяем первый и последний день с измерениями
-    if (measurements.isNotEmpty) {
-      final sortedMeasurements = List<Measurement>.from(measurements)
-        ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-
-      _firstDay = DateTime(
-        sortedMeasurements.first.createdAt.year,
-        sortedMeasurements.first.createdAt.month,
-        1, // Первый день месяца
-      );
-
-      _lastDay = DateTime(
-        sortedMeasurements.last.createdAt.year,
-        sortedMeasurements.last.createdAt.month + 1,
-        0, // Последний день месяца
-      );
-
-      // Если сегодня в пределах измерений, фокусируемся на сегодня
-      final today = DateTime.now();
-      if (today.isAfter(_firstDay!) && today.isBefore(_lastDay!)) {
-        _focusedDay = today;
-        _selectedDay = today;
-      } else {
-        // Иначе фокусируемся на последнем месяце с измерениями
-        _focusedDay = _lastDay!;
-        _selectedDay = _lastDay!;
-      }
-    }
-
     setState(() {
       _events = eventsMap;
     });
@@ -96,11 +66,13 @@ class _CalendarPageState extends State<CalendarPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: TableCalendar<Measurement>(
-        firstDay: _firstDay ?? DateTime.utc(2020, 1, 1),
-        lastDay: _lastDay ?? DateTime.utc(2030, 12, 31),
+        locale: 'ru_RU',
+        firstDay: DateTime.utc(2020, 1, 1),
+        lastDay: DateTime.utc(2030, 12, 31),
         focusedDay: _focusedDay,
         selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
         eventLoader: _getEventsForDay,
+        startingDayOfWeek: StartingDayOfWeek.monday,
         onDaySelected: (selectedDay, focusedDay) {
           setState(() {
             _selectedDay = selectedDay;
@@ -119,6 +91,7 @@ class _CalendarPageState extends State<CalendarPage> {
           weekendTextStyle: TextStyle(color: Colors.red),
           markerSize: 0,
         ),
+
         calendarBuilders: CalendarBuilders(
           defaultBuilder: (context, day, focusedDay) {
             final events = _getEventsForDay(day);
@@ -138,6 +111,21 @@ class _CalendarPageState extends State<CalendarPage> {
               day: day,
               measurements: events,
               isToday: true,
+            );
+          },
+          dowBuilder: (context, day) {
+            final text = DateFormat.E('ru_RU').format(day);
+            return Center(
+              child: Text(
+                text.toUpperCase(),
+                style: TextStyle(
+                  color:
+                      day.weekday == DateTime.sunday ||
+                              day.weekday == DateTime.saturday
+                          ? Colors.red
+                          : Colors.black,
+                ),
+              ),
             );
           },
         ),

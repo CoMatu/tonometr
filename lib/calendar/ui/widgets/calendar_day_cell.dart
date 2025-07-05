@@ -31,7 +31,7 @@ class CalendarDayCell extends StatelessWidget {
         measurements.map((m) => m.diastolic).reduce((a, b) => a + b) ~/
         measurements.length;
 
-    return '$avgSystolic/$avgDiastolic';
+    return '$avgSystolic\n$avgDiastolic';
   }
 
   Color _getBorderColor() {
