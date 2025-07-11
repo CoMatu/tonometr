@@ -4,9 +4,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:tonometr/blood_pressure/ui/cards/blood_pressure_card.dart';
 import 'package:tonometr/blood_pressure/ui/dialogs/add_measurement_dialog.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
+import 'package:tonometr/core/ui_kit/show_top_snackbar.dart';
 import 'package:tonometr/database/db.dart';
 import 'package:tonometr/blood_pressure/domain/blood_pressure_repository.dart';
 import 'package:tonometr/core/services/event_bus.dart';
+
+// TODO(CoMatu): Добавить пагинацию списка измерений
+// Matusevich Vyacheslav <Telegram: @CoMatu>, 05 July 2025
 
 @RoutePage()
 class BloodPressurePage extends StatefulWidget {
@@ -58,9 +62,11 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
     } catch (e) {
       setState(() => _isLoading = false);
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Ошибка загрузки данных: $e')));
+        showTopSnackBar(
+          context: context,
+          message: 'Ошибка загрузки данных: $e',
+          type: TopSnackBarType.error,
+        );
       }
     }
   }
@@ -171,6 +177,7 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
       floatingActionButton:
           _showFab
               ? FloatingActionButton(
+                backgroundColor: Colors.orange,
                 onPressed: _showAddMeasurementDialog,
                 child: const Icon(Icons.add),
               )
@@ -204,15 +211,19 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
         await _loadMeasurements();
         EventBus().emit(DataChangedEvent('measurements'));
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Запись удалена')));
+          showTopSnackBar(
+            context: context,
+            message: 'Запись удалена',
+            type: TopSnackBarType.success,
+          );
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Ошибка удаления: $e')));
+          showTopSnackBar(
+            context: context,
+            message: 'Ошибка удаления: $e',
+            type: TopSnackBarType.error,
+          );
         }
       }
     }

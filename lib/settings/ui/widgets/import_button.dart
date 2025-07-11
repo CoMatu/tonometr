@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tonometr/core/ui_kit/show_top_snackbar.dart';
 import 'package:tonometr/settings/domain/import_controller.dart';
 import 'package:tonometr/settings/ui/dialogs/import_preview_dialog.dart';
 import 'package:tonometr/core/initialization/ui/inherited_dependencies.dart';
@@ -36,19 +37,21 @@ class _ImportButtonState extends State<ImportButton> {
 
       if (measurements == null) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Файл не выбран')));
+          showTopSnackBar(
+            context: context,
+            message: 'Файл не выбран',
+            type: TopSnackBarType.error,
+          );
         }
         return;
       }
 
       if (measurements.isEmpty) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Файл не содержит данных для импорта'),
-            ),
+          showTopSnackBar(
+            context: context,
+            message: 'Файл не содержит данных для импорта',
+            type: TopSnackBarType.error,
           );
         }
         return;
@@ -65,15 +68,17 @@ class _ImportButtonState extends State<ImportButton> {
                     measurements,
                   );
                   if (mounted) {
-                    // ignore: use_build_context_synchronously
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
+                    showTopSnackBar(
+                      // ignore: use_build_context_synchronously
+                      context: context,
+                      message:
                           success
                               ? 'Импортировано ${measurements.length} измерений'
                               : 'Ошибка при импорте',
-                        ),
-                      ),
+                      type:
+                          success
+                              ? TopSnackBarType.success
+                              : TopSnackBarType.error,
                     );
 
                     if (success) {

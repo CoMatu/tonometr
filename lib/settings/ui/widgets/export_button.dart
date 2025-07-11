@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:tonometr/core/ui_kit/show_top_snackbar.dart';
 import 'package:tonometr/settings/domain/export_controller.dart';
 import 'package:tonometr/core/initialization/ui/inherited_dependencies.dart';
 import 'package:tonometr/settings/ui/dialogs/export_options_dialog.dart';
@@ -72,32 +73,29 @@ class _ExportButtonState extends State<ExportButton> {
       if (exportedFile != null) {
         if (mounted) {
           final fileName = exportedFile.path.split('/').last;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Данные экспортированы в файл: $fileName'),
-              duration: const Duration(seconds: 3),
-              action: SnackBarAction(
-                label: 'Открыть',
-                onPressed: () {
-                  // Здесь можно добавить логику для открытия файла
-                },
-              ),
-            ),
+          showTopSnackBar(
+            context: context,
+            message: 'Данные экспортированы в файл: $fileName',
+            type: TopSnackBarType.success,
           );
           widget.onExportComplete?.call();
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Нет данных для экспорта')),
+          showTopSnackBar(
+            context: context,
+            message: 'Нет данных для экспорта',
+            type: TopSnackBarType.error,
           );
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Ошибка при экспорте: $e')));
+        showTopSnackBar(
+          context: context,
+          message: 'Ошибка при экспорте: $e',
+          type: TopSnackBarType.error,
+        );
       }
     } finally {
       if (mounted) {

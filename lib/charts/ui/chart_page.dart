@@ -9,6 +9,7 @@ import 'package:tonometr/charts/ui/widgets/period_selector.dart';
 import 'package:tonometr/charts/ui/dialogs/custom_period_dialog.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
 import 'package:tonometr/core/services/event_bus.dart';
+import 'package:tonometr/core/ui_kit/show_top_snackbar.dart';
 import 'package:tonometr/database/db.dart';
 
 @RoutePage()
@@ -65,9 +66,11 @@ class _ChartPageState extends State<ChartPage> {
     } catch (e) {
       setState(() => _isLoading = false);
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Ошибка загрузки данных: $e')));
+        showTopSnackBar(
+          context: context,
+          message: 'Ошибка загрузки данных: $e',
+          type: TopSnackBarType.error,
+        );
       }
     }
   }

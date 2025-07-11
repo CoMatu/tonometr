@@ -10,7 +10,7 @@ class ChartLegend extends StatelessWidget {
       children: [
         _LegendItem(color: Colors.red, label: 'Систолическое'),
         _LegendItem(color: Colors.blue, label: 'Диастолическое'),
-        _LegendItem(color: Colors.green, label: 'Пульс'),
+        // _LegendItem(color: Colors.green, label: 'Пульс'),
       ],
     );
   }

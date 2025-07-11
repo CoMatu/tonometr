@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
+import 'package:tonometr/core/ui_kit/show_top_snackbar.dart';
 import 'package:tonometr/core/ui_kit/text_fields/app_text_field.dart';
 import 'package:tonometr/database/db.dart';
 import 'package:tonometr/core/services/event_bus.dart';
@@ -116,15 +117,19 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
         Navigator.of(context).pop();
         widget.onSaved();
         EventBus().emit(DataChangedEvent('measurements'));
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Данные сохранены')));
+        showTopSnackBar(
+          context: context,
+          message: 'Данные сохранены',
+          type: TopSnackBarType.success,
+        );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Ошибка сохранения: $e')));
+        showTopSnackBar(
+          context: context,
+          message: 'Ошибка сохранения: $e',
+          type: TopSnackBarType.error,
+        );
       }
     } finally {
       setState(() => _isSaving = false);
