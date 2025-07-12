@@ -5,7 +5,6 @@ import 'package:tonometr/core/ui_kit/text_fields/app_text_field.dart';
 import 'package:tonometr/database/db.dart';
 import 'package:tonometr/core/services/event_bus.dart';
 import 'package:tonometr/core/utils/datetime_utils.dart';
-import 'package:tonometr/themes/app_colors.dart';
 
 class AddMeasurementDialog extends StatefulWidget {
   final VoidCallback onSaved;
