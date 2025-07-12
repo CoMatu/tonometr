@@ -14,6 +14,7 @@ import 'package:tonometr/core/initialization/data/services/package_info_service.
 import 'package:tonometr/database/db.dart';
 import 'package:tonometr/themes/dark_theme.dart';
 import 'package:tonometr/themes/light_theme.dart';
+import 'package:yandex_mobileads/mobile_ads.dart';
 
 /// Initializes the app and returns a [Dependencies] object
 Future<Dependencies> $initializeDependencies({
@@ -80,5 +81,8 @@ final Map<String, _InitializationStep> _initializationSteps =
 
         final themeName = await dependencies.storage.read(key: 'app_theme');
         dependencies.theme = themeName == 'dark' ? darkTheme : lightTheme;
+      },
+      '... Инициализируем рекламу': (dependencies) async {
+        MobileAds.initialize();
       },
     };

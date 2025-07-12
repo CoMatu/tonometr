@@ -29,7 +29,7 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
   DateTime _selectedDateTime = DateTime.now();
 
   final _pressureStyle = TextStyle(
-    color: AppColors.textPrimary,
+    //color: AppColors.textPrimary,
     fontSize: 22,
     fontWeight: FontWeight.w600,
   );

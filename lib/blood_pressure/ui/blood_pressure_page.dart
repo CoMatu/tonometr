@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:tonometr/blood_pressure/ui/cards/blood_pressure_card.dart';
 import 'package:tonometr/blood_pressure/ui/dialogs/add_measurement_dialog.dart';
+import 'package:tonometr/config/app_config.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
 import 'package:tonometr/core/ui_kit/show_top_snackbar.dart';
 import 'package:tonometr/database/db.dart';
@@ -155,8 +157,31 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
     );
   }
 
+  static const double _bannerHeight = 100.0;
+
+  Widget _buildMainContent() {
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : _measurements.isEmpty
+        ? const Center(
+          child: Text('Нет записей о давлении', style: TextStyle(fontSize: 16)),
+        )
+        : ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: _measurements.length,
+          itemBuilder: (context, index) {
+            final measurement = _measurements[index];
+            return BloodPressureCard(
+              measurement: measurement,
+              onDelete: () => _deleteMeasurement(measurement),
+            );
+          },
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final showBanner = !_adsLoading && _adsEnabled;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Давление'),
@@ -168,43 +193,40 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
           ),
         ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child:
-                _isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : _measurements.isEmpty
-                    ? const Center(
-                      child: Text(
-                        'Нет записей о давлении',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    )
-                    : ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: _measurements.length,
-                      itemBuilder: (context, index) {
-                        final measurement = _measurements[index];
-                        return BloodPressureCard(
-                          measurement: measurement,
-                          onDelete: () => _deleteMeasurement(measurement),
-                        );
-                      },
-                    ),
+          // Основной контент с учетом баннера
+          Positioned.fill(
+            bottom: showBanner ? _bannerHeight : 0,
+            child: _buildMainContent(),
           ),
-          if (!_adsLoading && _adsEnabled)
-            const YandexBannerAdWidget(adUnitId: 'R-M-16235352-1'),
-        ],
-      ),
-      floatingActionButton:
-          _showFab
-              ? FloatingActionButton(
+          // Баннер
+          if (showBanner)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: _bannerHeight,
+              child: YandexBannerAdWidget(
+                adUnitId:
+                    AppConfig.configType == 'dev'
+                        ? 'demo-banner-yandex'
+                        : AppConfig.yandexBannerAdId,
+              ),
+            ),
+          // FAB
+          if (_showFab)
+            Positioned(
+              right: 16,
+              bottom: showBanner ? (_bannerHeight + 16) : 16,
+              child: FloatingActionButton(
                 backgroundColor: Colors.orange,
                 onPressed: _showAddMeasurementDialog,
                 child: const Icon(Icons.add),
-              )
-              : null,
+              ),
+            ),
+        ],
+      ),
     );
   }
 

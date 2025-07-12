@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:tonometr/config/app_config.dart';
 import 'package:tonometr/themes/theme_provider.dart';
 import 'package:tonometr/settings/ui/widgets/import_button.dart';
 import 'package:tonometr/settings/ui/widgets/export_button.dart';
@@ -75,7 +76,7 @@ class _SettingsPageState extends State<SettingsPage> {
           const ImportButton(),
           const ExportButton(),
           if (!_loading && _adsEnabled)
-            const YandexBannerAdWidget(adUnitId: 'R-M-16235352-1'),
+            YandexBannerAdWidget(adUnitId: AppConfig.yandexBannerAdId),
         ],
       ),
     );

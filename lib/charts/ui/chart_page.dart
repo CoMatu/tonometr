@@ -7,6 +7,7 @@ import 'package:tonometr/charts/ui/widgets/blood_pressure_chart.dart';
 import 'package:tonometr/charts/ui/widgets/chart_legend.dart';
 import 'package:tonometr/charts/ui/widgets/period_selector.dart';
 import 'package:tonometr/charts/ui/dialogs/custom_period_dialog.dart';
+import 'package:tonometr/config/app_config.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
 import 'package:tonometr/core/services/event_bus.dart';
 import 'package:tonometr/core/ui_kit/show_top_snackbar.dart';
@@ -179,7 +180,7 @@ class _ChartPageState extends State<ChartPage> {
                     ),
           ),
           if (!_adsLoading && _adsEnabled)
-            const YandexBannerAdWidget(adUnitId: 'R-M-16235352-1'),
+            YandexBannerAdWidget(adUnitId: AppConfig.yandexBannerAdId),
         ],
       ),
     );

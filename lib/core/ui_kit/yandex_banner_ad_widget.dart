@@ -18,8 +18,12 @@ class _YandexBannerAdWidgetState extends State<YandexBannerAdWidget> {
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) {
-      MobileAds.initialize();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (Platform.isAndroid && !_isBannerAlreadyCreated && !hasError) {
       _loadAd();
     }
   }
@@ -35,6 +39,10 @@ class _YandexBannerAdWidgetState extends State<YandexBannerAdWidget> {
       adSize: _getAdSize(),
       adRequest: const AdRequest(),
       onAdLoaded: () {
+        if (!mounted) {
+          _bannerAd?.destroy();
+          return;
+        }
         setState(() {
           _isBannerAlreadyCreated = true;
           hasError = false;

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tonometr/blood_pressure/domain/blood_pressure_repository.dart';
+import 'package:tonometr/config/app_config.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
 import 'package:tonometr/core/services/event_bus.dart';
 import 'package:tonometr/database/db.dart';
@@ -182,7 +183,7 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
           ),
           if (!_adsLoading && _adsEnabled)
-            const YandexBannerAdWidget(adUnitId: 'R-M-16235352-1'),
+            YandexBannerAdWidget(adUnitId: AppConfig.yandexBannerAdId),
         ],
       ),
     );
