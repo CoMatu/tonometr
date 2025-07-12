@@ -10,6 +10,7 @@ class AppTextField extends StatelessWidget {
   final double width;
   final TextAlign textAlign;
   final FocusNode? focusNode;
+  final TextStyle? style;
 
   const AppTextField({
     super.key,
@@ -21,6 +22,7 @@ class AppTextField extends StatelessWidget {
     this.width = _fieldWidth,
     this.textAlign = TextAlign.center,
     this.focusNode,
+    this.style,
   });
 
   @override
@@ -35,6 +37,7 @@ class AppTextField extends StatelessWidget {
         maxLines: maxLines,
         decoration: InputDecoration(labelText: label),
         validator: validator,
+        style: style,
       ),
     );
   }

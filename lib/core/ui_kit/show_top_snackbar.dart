@@ -55,6 +55,7 @@ void showTopSnackBar({
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Material(
+              color: Colors.transparent,
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(

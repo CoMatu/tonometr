@@ -5,6 +5,7 @@ import 'package:tonometr/core/ui_kit/text_fields/app_text_field.dart';
 import 'package:tonometr/database/db.dart';
 import 'package:tonometr/core/services/event_bus.dart';
 import 'package:tonometr/core/utils/datetime_utils.dart';
+import 'package:tonometr/themes/app_colors.dart';
 
 class AddMeasurementDialog extends StatefulWidget {
   final VoidCallback onSaved;
@@ -26,6 +27,12 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
   final _pulseFocus = FocusNode();
   bool _isSaving = false;
   DateTime _selectedDateTime = DateTime.now();
+
+  final _pressureStyle = TextStyle(
+    color: AppColors.textPrimary,
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
+  );
 
   @override
   void initState() {
@@ -201,6 +208,7 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
                 children: [
                   Expanded(
                     child: AppTextField(
+                      style: _pressureStyle,
                       controller: _systolicController,
                       focusNode: _systolicFocus,
                       label: 'Систолическое',
@@ -220,6 +228,7 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: AppTextField(
+                      style: _pressureStyle,
                       controller: _diastolicController,
                       focusNode: _diastolicFocus,
                       label: 'Диастолическое',
@@ -239,6 +248,7 @@ class _AddMeasurementDialogState extends State<AddMeasurementDialog> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: AppTextField(
+                      style: _pressureStyle,
                       controller: _pulseController,
                       focusNode: _pulseFocus,
                       label: 'Пульс',
