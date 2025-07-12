@@ -10,6 +10,8 @@ import 'package:tonometr/charts/ui/dialogs/custom_period_dialog.dart';
 import 'package:tonometr/core/initialization/data/dependencies_ext.dart';
 import 'package:tonometr/core/services/event_bus.dart';
 import 'package:tonometr/core/ui_kit/show_top_snackbar.dart';
+import 'package:tonometr/core/ui_kit/yandex_banner_ad_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tonometr/database/db.dart';
 
 @RoutePage()
@@ -29,6 +31,9 @@ class _ChartPageState extends State<ChartPage> {
   bool _isLoading = true;
   late final BloodPressureRepository _repository;
   StreamSubscription<DataChangedEvent>? _eventSubscription;
+  bool _adsEnabled = true;
+  bool _adsLoading = true;
+  final _adsKey = 'ads_enabled';
 
   @override
   void initState() {
@@ -36,6 +41,7 @@ class _ChartPageState extends State<ChartPage> {
     _repository = context.dependencies.bloodPressureRepository;
     _loadMeasurements();
     _subscribeToEvents();
+    _initAdsEnabled();
   }
 
   void _subscribeToEvents() {
@@ -118,47 +124,64 @@ class _ChartPageState extends State<ChartPage> {
     }
   }
 
+  Future<void> _initAdsEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getString(_adsKey);
+    setState(() {
+      _adsEnabled = value != 'false';
+      _adsLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('График давления'), toolbarHeight: 48),
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 4,
+      body: Column(
+        children: [
+          Expanded(
+            child:
+                _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          child: PeriodSelector(
+                            selectedPeriod: _selectedPeriod,
+                            onPeriodChanged: _onPeriodChanged,
+                            onCustomPeriodPressed: _showCustomPeriodDialog,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          child: const ChartLegend(),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            child: BloodPressureChart(
+                              measurements: _filteredMeasurements,
+                              period: _selectedPeriod,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    child: PeriodSelector(
-                      selectedPeriod: _selectedPeriod,
-                      onPeriodChanged: _onPeriodChanged,
-                      onCustomPeriodPressed: _showCustomPeriodDialog,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 4,
-                    ),
-                    child: const ChartLegend(),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      child: BloodPressureChart(
-                        measurements: _filteredMeasurements,
-                        period: _selectedPeriod,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+          ),
+          if (!_adsLoading && _adsEnabled)
+            const YandexBannerAdWidget(adUnitId: 'R-M-16235352-1'),
+        ],
+      ),
     );
   }
 }

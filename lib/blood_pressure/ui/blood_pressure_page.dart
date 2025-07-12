@@ -8,6 +8,8 @@ import 'package:tonometr/core/ui_kit/show_top_snackbar.dart';
 import 'package:tonometr/database/db.dart';
 import 'package:tonometr/blood_pressure/domain/blood_pressure_repository.dart';
 import 'package:tonometr/core/services/event_bus.dart';
+import 'package:tonometr/core/ui_kit/yandex_banner_ad_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // TODO(CoMatu): Добавить пагинацию списка измерений
 // Matusevich Vyacheslav <Telegram: @CoMatu>, 05 July 2025
@@ -26,6 +28,9 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
   bool _showFab = true;
   late final BloodPressureRepository _repository;
   StreamSubscription<DataChangedEvent>? _eventSubscription;
+  bool _adsEnabled = true;
+  bool _adsLoading = true;
+  final _adsKey = 'ads_enabled';
 
   @override
   void initState() {
@@ -33,6 +38,7 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
     _repository = context.dependencies.bloodPressureRepository;
     _loadMeasurements();
     _subscribeToEvents();
+    _initAdsEnabled();
   }
 
   void _subscribeToEvents() {
@@ -69,6 +75,15 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
         );
       }
     }
+  }
+
+  Future<void> _initAdsEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getString(_adsKey);
+    setState(() {
+      _adsEnabled = value != 'false';
+      _adsLoading = false;
+    });
   }
 
   void _showAddMeasurementDialog() {
@@ -153,27 +168,35 @@ class _BloodPressurePageState extends State<BloodPressurePage> {
           ),
         ],
       ),
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _measurements.isEmpty
-              ? const Center(
-                child: Text(
-                  'Нет записей о давлении',
-                  style: TextStyle(fontSize: 16),
-                ),
-              )
-              : ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: _measurements.length,
-                itemBuilder: (context, index) {
-                  final measurement = _measurements[index];
-                  return BloodPressureCard(
-                    measurement: measurement,
-                    onDelete: () => _deleteMeasurement(measurement),
-                  );
-                },
-              ),
+      body: Column(
+        children: [
+          Expanded(
+            child:
+                _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _measurements.isEmpty
+                    ? const Center(
+                      child: Text(
+                        'Нет записей о давлении',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    )
+                    : ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: _measurements.length,
+                      itemBuilder: (context, index) {
+                        final measurement = _measurements[index];
+                        return BloodPressureCard(
+                          measurement: measurement,
+                          onDelete: () => _deleteMeasurement(measurement),
+                        );
+                      },
+                    ),
+          ),
+          if (!_adsLoading && _adsEnabled)
+            const YandexBannerAdWidget(adUnitId: 'R-M-16235352-1'),
+        ],
+      ),
       floatingActionButton:
           _showFab
               ? FloatingActionButton(

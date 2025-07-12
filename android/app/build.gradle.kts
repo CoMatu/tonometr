@@ -72,3 +72,7 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    implementation("com.yandex.android:mobileads:7.13.0")
+}
